@@ -1,0 +1,15 @@
+apiVersion: klot.io/v1
+kind: App
+metadata:
+  name: chore-slack.nandy.io
+  description: Chore Slack - Nandy I/O
+spec:
+  source:
+    site: github.com
+    repo: nandy-io/chore-slack
+  namespace: chore-slack-nandy-io
+  manifests:
+  - path: daemon/kubernetes/daemon.yaml
+  requires:
+  - site: github.com
+    repo: nandy-io/chore

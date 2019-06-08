@@ -1,2 +1,2 @@
-# chore-slack-daemon
-Chore Slack Daemon
+# chore-slack
+Chore Slack
