@@ -3,6 +3,7 @@ IMAGE=chore-slack-daemon
 VERSION?=0.1
 NAME=$(IMAGE)-$(ACCOUNT)
 NETWORK=klot.io
+NAMESPACE=chore-slack-nandy-io
 VOLUMES=-v ${PWD}/secret/:/opt/service/secret/ \
 		-v ${PWD}/lib/:/opt/service/lib/ \
 		-v ${PWD}/bin/:/opt/service/bin/ \
@@ -45,7 +46,7 @@ install:
 	kubectl create -f kubernetes/daemon.yaml
 
 secret:
-	kubectl -n $(NAMESPACE) create secret generic secret --from-file=secret/slack.yaml
+	kubectl -n $(NAMESPACE) create secret generic secret --from-file=secret/slack.json
 
 update:
 	kubectl replace -f kubernetes/daemon.yaml
