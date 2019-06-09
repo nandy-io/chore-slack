@@ -27,7 +27,9 @@ spec:
         - name: REDIS_CHANNEL
           value: nandy.io/chore
         - name: SLEEP
-          value: "0.1"
+          value: "1"
+        - name: PYTHONUNBUFFERED
+          value: '1'
         volumeMounts:
         - name: secret
           mountPath: "/opt/service/secret"

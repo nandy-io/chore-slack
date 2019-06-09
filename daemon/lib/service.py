@@ -21,8 +21,8 @@ class Daemon(object):
     }
 
     ACT_STATEMENTS = {
-        "negative": "I'm sorry but you did not %s.",
-        "positive": "thank you for you did %s."
+        "negative": "you should have %s.",
+        "positive": "it is good you %s."
     }
 
     ACTION_STATEMENTS = {
@@ -30,20 +30,22 @@ class Daemon(object):
         "unpause": "you do have to %s now.",
         "skip": "you do not have to %s.",
         "unskip": "you do have to %s.",
-        "complete": "thank you. You did %s",
-        "uncomplete": "I'm sorry but you did not %s yet.",
         "expire": "your time to %s has expired.",
         "unexpire": "your time to %s has not expired."
     }
 
     TODO_STATEMENTS = {
-        "create": "at some point, %s."
+        "create": "'%s' has been added to your ToDo list.",
+        "complete": "'%s' has beed crossed off your ToDo list.",
+        "uncomplete": "'%s' is back on your ToDo list."
     }
 
     TODO_STATEMENTS.update(ACTION_STATEMENTS)
 
     ROUTINE_STATEMENTS = {
-        "create": "time to %s."
+        "create": "time to %s.",
+        "complete": "thank you. You did %s",
+        "uncomplete": "I'm sorry but you did not %s yet."
     }
 
     ROUTINE_STATEMENTS.update(ACTION_STATEMENTS)
@@ -87,7 +89,7 @@ class Daemon(object):
 
         message = self.pubsub.get_message()
 
-        if not message or not isinstance(message["data"], str):
+        if not message or isinstance(message["data"], int):
             return
 
         data = json.loads(message['data'])
@@ -145,6 +147,8 @@ class Daemon(object):
         """
         Runs the daemon
         """
+
+        print("dude")
 
         self.subscribe()
 
