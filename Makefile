@@ -1,10 +1,13 @@
-.PHONY: install remove reset tag
+.PHONY: install update remove reset tag
 
 install:
-	kubectl create namespace chore-slack-nandy-io
+	kubectl create -f kubernetes/namespace.yaml
+
+update:
+	kubectl replace -f kubernetes/namespace.yaml
 
 remove:
-	kubectl delete namespace chore-slack-nandy-io
+	-kubectl delete -f kubernetes/namespace.yaml
 
 reset: remove install
 
