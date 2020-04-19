@@ -1,14 +1,16 @@
 apiVersion: klot.io/v1
-kind: App
+kind: KlotIOApp
 metadata:
   name: chore-slack.nandy.io
-  version: v0.1
-  description: Chore Slack - Nandy I/O
 spec:
   namespace: chore-slack-nandy-io
+  description: Chore Slack - Nandy I/O
   manifests:
   - path: kubernetes/namespace.yaml
   - path: daemon/kubernetes/daemon.yaml
+  settings:
+  - name: webhook_url
+    description: The incoming Webhook URL for your Slack App
   requires:
   - name: chore.nandy.io
     source:

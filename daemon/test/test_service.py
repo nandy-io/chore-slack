@@ -38,12 +38,7 @@ class TestService(unittest.TestCase):
         "SLEEP": "0.7"
     })
     @unittest.mock.patch("redis.StrictRedis", MockRedis)
-    @unittest.mock.patch("builtins.open", create=True)
-    def setUp(self, mock_open):
-
-        mock_open.side_effect = [
-            unittest.mock.mock_open(read_data='{"url": "http://peeps"}').return_value
-        ]
+    def setUp(self):
 
         self.daemon = service.Daemon()
 
@@ -54,19 +49,13 @@ class TestService(unittest.TestCase):
         "SLEEP": "0.7"
     })
     @unittest.mock.patch("redis.StrictRedis", MockRedis)
-    @unittest.mock.patch("builtins.open", create=True)
-    def test___init___(self, mock_open):
-
-        mock_open.side_effect = [
-            unittest.mock.mock_open(read_data='{"url": "http://peeps"}').return_value
-        ]
+    def test___init___(self):
 
         daemon = service.Daemon()
 
         self.assertEqual(daemon.redis.host, "most.com")
         self.assertEqual(daemon.redis.port, 667)
         self.assertEqual(daemon.channel, "stuff")
-        self.assertEqual(daemon.slack_api, "http://peeps")
         self.assertEqual(daemon.sleep, 0.7)
 
     def test_subscribe(self):
@@ -95,8 +84,13 @@ class TestService(unittest.TestCase):
         ))
 
     @unittest.mock.patch("service.time.time", unittest.mock.MagicMock(return_value=7))
+    @unittest.mock.patch("builtins.open", create=True)
     @unittest.mock.patch("requests.post")
-    def test_say(self, mock_post):
+    def test_say(self, mock_post, mock_open):
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         self.daemon.say("hey")
 
@@ -110,6 +104,12 @@ class TestService(unittest.TestCase):
             }),
             unittest.mock.call().raise_for_status()
         ])
+
+        mock_open.assert_called_once_with("/opt/service/config/settings.yaml", "r")
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         mock_post.reset_mock()
 
@@ -126,8 +126,14 @@ class TestService(unittest.TestCase):
         ])
 
     @unittest.mock.patch("service.time.time", unittest.mock.MagicMock(return_value=7))
+    @unittest.mock.patch("builtins.open", create=True)
     @unittest.mock.patch("requests.post")
-    def test_process(self, mock_post):
+    def test_process(self, mock_post, mock_open):
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value,
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         self.daemon.subscribe()
 
@@ -241,6 +247,10 @@ class TestService(unittest.TestCase):
         self.daemon.process()
         self.daemon.process()
 
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
+
         mock_post.reset_mock()
         self.daemon.process()
         mock_post.assert_has_calls([
@@ -249,6 +259,10 @@ class TestService(unittest.TestCase):
             }),
             unittest.mock.call().raise_for_status()
         ])
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         mock_post.reset_mock()
         self.daemon.process()
@@ -259,6 +273,10 @@ class TestService(unittest.TestCase):
             unittest.mock.call().raise_for_status()
         ])
 
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
+
         mock_post.reset_mock()
         self.daemon.process()
         mock_post.assert_has_calls([
@@ -267,6 +285,10 @@ class TestService(unittest.TestCase):
             }),
             unittest.mock.call().raise_for_status()
         ])
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         mock_post.reset_mock()
         self.daemon.process()
@@ -277,6 +299,10 @@ class TestService(unittest.TestCase):
             unittest.mock.call().raise_for_status()
         ])
 
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
+
         mock_post.reset_mock()
         self.daemon.process()
         mock_post.assert_has_calls([
@@ -285,6 +311,10 @@ class TestService(unittest.TestCase):
             }),
             unittest.mock.call().raise_for_status()
         ])
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         mock_post.reset_mock()
         self.daemon.process()
@@ -296,11 +326,16 @@ class TestService(unittest.TestCase):
         ])
 
     @unittest.mock.patch("service.time.time", unittest.mock.MagicMock(return_value=7))
+    @unittest.mock.patch("builtins.open", create=True)
     @unittest.mock.patch("requests.post")
     @unittest.mock.patch("service.time.sleep")
     @unittest.mock.patch("traceback.format_exc")
     @unittest.mock.patch('builtins.print')
-    def test_run(self, mock_print, mock_traceback, mock_sleep, mock_post):
+    def test_run(self, mock_print, mock_traceback, mock_sleep, mock_post, mock_open):
+
+        mock_open.side_effect = [
+            unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
+        ]
 
         self.daemon.redis.messages = [
             {
