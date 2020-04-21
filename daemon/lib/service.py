@@ -75,8 +75,8 @@ class Daemon(object):
 
     def say(self, text, name=None):
 
-        with open("/opt/service/config/settings.yaml", "r") as slack_file:
-            webhook_url = yaml.safe_load(slack_file)["webhook_url"]
+        with open("/opt/service/config/settings.yaml", "r") as settings_file:
+            webhook_url = yaml.safe_load(settings_file)["webhook_url"]
 
         message = {
             "text": f"{name}, {text}" if name else text
