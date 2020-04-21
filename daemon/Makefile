@@ -1,10 +1,10 @@
 ACCOUNT=nandyio
 IMAGE=chore-slack-daemon
-VERSION?=0.1
+VERSION?=0.2
 NAME=$(IMAGE)-$(ACCOUNT)
 NETWORK=klot.io
 NAMESPACE=chore-slack-nandy-io
-VOLUMES=-v ${PWD}/secret/:/opt/service/secret/ \
+VOLUMES=-v ${PWD}/config/:/opt/service/config/ \
 		-v ${PWD}/lib/:/opt/service/lib/ \
 		-v ${PWD}/bin/:/opt/service/bin/ \
 		-v ${PWD}/test/:/opt/service/test/
@@ -13,16 +13,16 @@ ENVIRONMENT=-e SLEEP=0.1 \
 			-e REDIS_PORT=6379 \
 			-e REDIS_CHANNEL=nandy.io/chore
 
-.PHONY: cross build network shell test run start stop push install secret update remove reset
+.PHONY: cross build network shell test run start stop push install update remove reset
 
 cross:
 	docker run --rm --privileged multiarch/qemu-user-static:register --reset
-	
+
 build:
 	docker build . -t $(ACCOUNT)/$(IMAGE):$(VERSION)
 
 network:
-	-docker network create klot-io
+	-docker network create $(NETWORK)
 
 shell: network
 	-docker run -it --rm --name=$(NAME) --network=$(NETWORK) $(VOLUMES) $(ENVIRONMENT) $(ACCOUNT)/$(IMAGE):$(VERSION) sh
@@ -44,9 +44,6 @@ push:
 
 install:
 	kubectl create -f kubernetes/daemon.yaml
-
-secret:
-	kubectl -n $(NAMESPACE) create secret generic secret --from-file=secret/slack.json
 
 update:
 	kubectl replace -f kubernetes/daemon.yaml

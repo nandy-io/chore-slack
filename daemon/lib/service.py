@@ -5,6 +5,7 @@ Main module for daemon
 import os
 import time
 import json
+import yaml
 import redis
 import requests
 import traceback
@@ -58,9 +59,6 @@ class Daemon(object):
         self.redis = redis.StrictRedis(host=os.environ['REDIS_HOST'], port=int(os.environ['REDIS_PORT']))
         self.channel = os.environ['REDIS_CHANNEL']
 
-        with open("/opt/service/secret/slack.json", "r") as slack_file:
-            self.slack_api = json.load(slack_file)["url"]
-
         self.pubsub = None
 
     def subscribe(self):
@@ -69,7 +67,7 @@ class Daemon(object):
         """
 
         self.pubsub = self.redis.pubsub()
-        self.pubsub.subscribe(self.channel) 
+        self.pubsub.subscribe(self.channel)
 
     @staticmethod
     def text(model):
@@ -77,11 +75,14 @@ class Daemon(object):
 
     def say(self, text, name=None):
 
+        with open("/opt/service/config/settings.yaml", "r") as settings_file:
+            webhook_url = yaml.safe_load(settings_file)["webhook_url"]
+
         message = {
             "text": f"{name}, {text}" if name else text
         }
 
-        requests.post(self.slack_api, json=message).raise_for_status()
+        requests.post(webhook_url, json=message).raise_for_status()
 
     def process(self):
         """

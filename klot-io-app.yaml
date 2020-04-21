@@ -1,14 +1,24 @@
 apiVersion: klot.io/v1
-kind: App
+kind: KlotIOApp
 metadata:
   name: chore-slack.nandy.io
-  version: v0.1
-  description: Chore Slack - Nandy I/O
 spec:
   namespace: chore-slack-nandy-io
+  description: Chore Slack - Nandy I/O
   manifests:
   - path: kubernetes/namespace.yaml
   - path: daemon/kubernetes/daemon.yaml
+  settings:
+  - name: webhook_url
+    description: |
+      Go to the Link below.
+      Create an App with the Create App button.
+      Go to Incoming Webhooks.
+      Add a new Webhook, selecting channel to post to.
+      Copy the Webhook URL and paste it above.
+    link:
+      name: Slack Apps
+      url: https://api.slack.com/apps
   requires:
   - name: chore.nandy.io
     source:
