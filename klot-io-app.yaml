@@ -10,7 +10,13 @@ spec:
   - path: daemon/kubernetes/daemon.yaml
   settings:
   - name: webhook_url
-    description: The incoming Webhook URL for your Slack App
+    description: |
+      Go to the URL below.
+      Create an App with the Create App button.
+      Go to Incoming Webhooks.
+      Add a new Webhook, selecting channel to post to.
+      Copy the Webhook URL and paste it above.
+    url: https://api.slack.com/apps
   requires:
   - name: chore.nandy.io
     source:
