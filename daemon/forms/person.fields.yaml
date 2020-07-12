@@ -1,0 +1,5 @@
+name: slack
+fields:
+- name: id
+  description: ID  to @ someone as slack as.
+  url: https://api.slack.com/reference/surfaces/formatting#mentioning-users
