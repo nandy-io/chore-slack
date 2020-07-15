@@ -91,8 +91,8 @@ class TestService(unittest.TestCase):
         self.assertEqual("<@ya>", self.daemon.reference({
             "name": "hey",
             "data": {
-                "slack": {
-                    "id": "ya"
+                "chore-slack.nandy.io": {
+                    "slack_id": "ya"
                 }
             }
         }))
