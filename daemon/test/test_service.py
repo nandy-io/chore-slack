@@ -67,36 +67,46 @@ class TestService(unittest.TestCase):
 
     def test_text(self):
 
-        self.assertEqual("ya", self.daemon.text(
-            {
-                "name": "hey",
-                "data": {
-                    "text": "ya"
-                }
-            }
-        ))
+        self.assertEqual("hey", self.daemon.text({
+            "name": "hey",
+            "data": {}
+        }))
 
-        self.assertEqual("hey", self.daemon.text(
-            {
-                "name": "hey",
-                "data": {}
+        self.assertEqual("ya", self.daemon.text({
+            "name": "hey",
+            "data": {
+                "text": "ya"
             }
-        ))
+        }))
+
+    def test_reference(self):
+
+        self.assertIsNone(self.daemon.reference({}))
+
+        self.assertEqual("hey", self.daemon.reference({
+            "name": "hey",
+            "data": {}
+        }))
+
+        self.assertEqual("<@ya>", self.daemon.reference({
+            "name": "hey",
+            "chore-slack.nandy.io": {
+                "slack_id": "ya"
+            }
+        }))
 
     @unittest.mock.patch("service.time.time", unittest.mock.MagicMock(return_value=7))
     @unittest.mock.patch("builtins.open", create=True)
     @unittest.mock.patch("requests.post")
     def test_say(self, mock_post, mock_open):
 
+        person = {}
+
         mock_open.side_effect = [
             unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
         ]
 
-        self.daemon.say("hey")
-
-        mock_post.assert_called_with("http://peeps", json={
-            "text": "hey"
-        })
+        self.daemon.say("hey", person)
 
         mock_post.assert_has_calls([
             unittest.mock.call("http://peeps", json={
@@ -115,7 +125,9 @@ class TestService(unittest.TestCase):
 
         self.daemon.say(
             "hey",
-            "dude"
+            {
+                "name": "dude"
+            }
         )
 
         mock_post.assert_has_calls([

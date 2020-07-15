@@ -24,3 +24,5 @@ spec:
     source:
       site: github.com
       repo: nandy-io/chore
+    integrations:
+    - path: daemon/forms/person.fields.yaml

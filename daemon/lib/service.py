@@ -71,15 +71,25 @@ class Daemon(object):
 
     @staticmethod
     def text(model):
+
         return model["data"].get("text", model["name"])
 
-    def say(self, text, name=None):
+    @staticmethod
+    def reference(person):
+
+        slack_id = person.get("chore-slack.nandy.io", {}).get("slack_id")
+
+        return f"<@{slack_id}>" if slack_id else person.get("name")
+
+    def say(self, text, person):
 
         with open("/opt/service/config/settings.yaml", "r") as settings_file:
             webhook_url = yaml.safe_load(settings_file)["webhook_url"]
 
+        reference = self.reference(person)
+
         message = {
-            "text": f"{name}, {text}" if name else text
+            "text": f"{reference}, {text}" if reference else text
         }
 
         requests.post(webhook_url, json=message).raise_for_status()
@@ -100,21 +110,21 @@ class Daemon(object):
 
             self.say(
                 self.AREA_STATEMENTS[data["action"]] % self.text(data["area"]),
-                data["person"]["name"]
+                data["person"]
             )
 
         elif data["kind"] == "act":
 
             self.say(
                 self.ACT_STATEMENTS[data["act"]["status"]] % self.text(data["act"]),
-                data["person"]["name"]
+                data["person"]
             )
 
         elif data["kind"] == "todo":
 
             self.say(
                 self.TODO_STATEMENTS[data["action"]] % self.text(data["todo"]),
-                data["person"]["name"]
+                data["person"]
             )
 
         elif data["kind"] == "todos":
@@ -126,7 +136,7 @@ class Daemon(object):
 
             self.say(
                 "\n".join(text),
-                data["person"]["name"]
+                data["person"]
             )
 
         elif data["kind"] == "routine":
@@ -134,7 +144,7 @@ class Daemon(object):
             if data["action"] != "remind":
                 self.say(
                     self.ROUTINE_STATEMENTS[data["action"]] % self.text(data["routine"]),
-                    data["person"]["name"]
+                    data["person"]
                 )
 
         elif data["kind"] == "task":
@@ -142,7 +152,7 @@ class Daemon(object):
             if data["action"] != "remind":
                 self.say(
                     self.ROUTINE_STATEMENTS[data["action"]] % data["task"]["text"],
-                    data["person"]["name"]
+                    data["person"]
                 )
 
     def run(self):

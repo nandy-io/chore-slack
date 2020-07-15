@@ -1,0 +1,6 @@
+description: How Slack can reference someone
+fields:
+- name: slack_id
+  description: ID to @ someone as slack as.
+  link: https://api.slack.com/reference/surfaces/formatting#mentioning-users
+  optional: true
