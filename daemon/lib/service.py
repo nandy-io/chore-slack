@@ -77,7 +77,7 @@ class Daemon(object):
     @staticmethod
     def reference(person):
 
-        slack_id = person.get("data", {}).get("chore-slack.nandy.io", {}).get("slack_id")
+        slack_id = person.get("chore-slack.nandy.io", {}).get("slack_id")
 
         return f"<@{slack_id}>" if slack_id else person.get("name")
 
