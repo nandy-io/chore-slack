@@ -6,7 +6,6 @@ spec:
   namespace: chore-slack-nandy-io
   description: Chore Slack - Nandy I/O
   manifests:
-  - path: kubernetes/namespace.yaml
   - path: daemon/kubernetes/daemon.yaml
   settings:
   - name: webhook_url
