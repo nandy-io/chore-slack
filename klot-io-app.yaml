@@ -15,13 +15,13 @@ spec:
     integrations:
     - path: daemon/forms/person.fields.yaml
   settings:
-    - name: webhook_url
-      description: |
-        Go to the Link below.
-        Create an App with the Create App button.
-        Go to Incoming Webhooks.
-        Add a new Webhook, selecting channel to post to.
-        Copy the Webhook URL and paste it above.
-      link:
-        name: Slack Apps
-        url: https://api.slack.com/apps
+  - name: webhook_url
+    description: |
+      Go to the Link below.
+      Create an App with the Create App button.
+      Go to Incoming Webhooks.
+      Add a new Webhook, selecting channel to post to.
+      Copy the Webhook URL and paste it above.
+    link:
+      name: Slack Apps
+      url: https://api.slack.com/apps
