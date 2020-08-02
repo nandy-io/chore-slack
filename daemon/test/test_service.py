@@ -341,9 +341,7 @@ class TestService(unittest.TestCase):
     @unittest.mock.patch("builtins.open", create=True)
     @unittest.mock.patch("requests.post")
     @unittest.mock.patch("service.time.sleep")
-    @unittest.mock.patch("traceback.format_exc")
-    @unittest.mock.patch('builtins.print')
-    def test_run(self, mock_print, mock_traceback, mock_sleep, mock_post, mock_open):
+    def test_run(self, mock_sleep, mock_post, mock_open):
 
         mock_open.side_effect = [
             unittest.mock.mock_open(read_data='webhook_url: http://peeps').return_value
@@ -369,10 +367,9 @@ class TestService(unittest.TestCase):
             None
         ]
 
-        mock_sleep.side_effect = [Exception("whoops"), Exception("adaisy")]
-        mock_traceback.side_effect = ["spirograph", Exception("doh")]
+        mock_sleep.side_effect = [Exception("whoops")]
 
-        self.assertRaisesRegex(Exception, "doh", self.daemon.run)
+        self.assertRaisesRegex(Exception, "whoops", self.daemon.run)
 
         self.assertEqual(self.daemon.redis, self.daemon.pubsub)
         self.assertEqual(self.daemon.redis.channel, "stuff")
@@ -385,9 +382,3 @@ class TestService(unittest.TestCase):
         ])
 
         mock_sleep.assert_called_with(0.7)
-
-        mock_print.assert_has_calls([
-            unittest.mock.call("whoops"),
-            unittest.mock.call("spirograph"),
-            unittest.mock.call("adaisy")
-        ])
