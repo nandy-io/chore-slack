@@ -1,15 +1,15 @@
 VERSION?=0.3
 TILT_PORT=26776
-.PHONY: up down integrate disintegrate tag untag
-
-settings:
-	kubectl -n chore-slack-nandy-io get configmap config -o jsonpath='{.data.settings\.yaml}' > config/settings.yaml
+.PHONY: integrate disintegrate settings up down tag untag
 
 integrate:
 	cp daemon/forms/person.fields.yaml ../people/config/integration_chore-slack.nandy.io_person.fields.yaml
 
 disintegrate:
 	rm ../people/config/integration_chore-slack.nandy.io_person.fields.yaml
+
+settings:
+	kubectl -n chore-slack-nandy-io get configmap config -o jsonpath='{.data.settings\.yaml}' > config/settings.yaml
 
 up: integrate
 	mkdir -p config
