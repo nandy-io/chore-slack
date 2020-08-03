@@ -7,6 +7,13 @@ spec:
   description: Chore Slack - Nandy I/O
   manifests:
   - path: daemon/kubernetes/daemon.yaml
+  requires:
+  - name: people.nandy.io
+    source:
+      site: github.com
+      repo: nandy-io/people
+    integrations:
+    - path: daemon/forms/person.fields.yaml
   settings:
   - name: webhook_url
     description: |
@@ -18,10 +25,3 @@ spec:
     link:
       name: Slack Apps
       url: https://api.slack.com/apps
-  requires:
-  - name: chore.nandy.io
-    source:
-      site: github.com
-      repo: nandy-io/chore
-    integrations:
-    - path: daemon/forms/person.fields.yaml
