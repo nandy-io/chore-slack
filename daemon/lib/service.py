@@ -9,6 +9,8 @@ import yaml
 import redis
 import requests
 
+import klotio
+
 class Daemon(object):
     """
     Main class for daemon
@@ -55,10 +57,22 @@ class Daemon(object):
 
         self.sleep = float(os.environ['SLEEP'])
 
-        self.redis = redis.StrictRedis(host=os.environ['REDIS_HOST'], port=int(os.environ['REDIS_PORT']))
+        self.redis = redis.Redis(host=os.environ['REDIS_HOST'], port=int(os.environ['REDIS_PORT']))
         self.channel = os.environ['REDIS_CHANNEL']
 
         self.pubsub = None
+
+        self.logger = klotio.logger("nandy-io-chore-slack-daemon")
+
+        self.logger.debug("init", extra={
+            "init": {
+                "sleep": self.sleep,
+                "redis": {
+                    "connection": str(self.redis),
+                    "channel": self.channel
+                }
+            }
+        })
 
     def subscribe(self):
         """
@@ -91,6 +105,8 @@ class Daemon(object):
             "text": f"{reference}, {text}" if reference else text
         }
 
+        self.logger.info("say", extra={"say": message})
+
         requests.post(webhook_url, json=message).raise_for_status()
 
     def process(self):
@@ -100,10 +116,14 @@ class Daemon(object):
 
         message = self.pubsub.get_message()
 
-        if not message or isinstance(message["data"], int):
+        self.logger.debug("get_message", extra={"get_message": message})
+
+        if not message or not isinstance(message.get("data"), (str, bytes)):
             return
 
         data = json.loads(message['data'])
+
+        self.logger.info("data", extra={"data": data})
 
         if data["kind"] == "area":
 
