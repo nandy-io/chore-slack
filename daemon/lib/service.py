@@ -11,7 +11,7 @@ import requests
 
 import klotio
 
-class Daemon(object):
+class Daemon:
     """
     Main class for daemon
     """
@@ -84,17 +84,26 @@ class Daemon(object):
 
     @staticmethod
     def text(model):
+        """
+        Get text from data or name
+        """
 
         return model["data"].get("text", model["name"])
 
     @staticmethod
     def reference(person):
+        """
+        Get how to reference the person from the person slack info or person name.
+        """
 
         slack_id = person.get("chore-slack.nandy.io", {}).get("slack_id")
 
         return f"<@{slack_id}>" if slack_id else person.get("name")
 
     def say(self, text, person):
+        """
+        Send the text to Slack based on the reference
+        """
 
         with open("/opt/service/config/settings.yaml", "r") as settings_file:
             webhook_url = yaml.safe_load(settings_file)["webhook_url"]
